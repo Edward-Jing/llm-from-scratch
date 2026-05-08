@@ -21,6 +21,7 @@ def iter_jsonl_records(path: str | Path, encoding: str = "utf-8") -> Iterator[di
         useful line number in errors.
     """
 
+
     raise NotImplementedError("Implement JSONL record parsing in scratch_llm/data/jsonl.py")
 
 

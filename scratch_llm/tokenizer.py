@@ -17,7 +17,7 @@ DEFAULT_CHAT_TEMPLATE = (
     "{% elif message['role'] == 'assistant' %}"
     "<|im_start|>assistant\n{{ message['content'] }}<|im_end|>\n"
     "{% endif %}"
-    "{% endfor %}"
+    "{% endfor %}" 
     "{% if add_generation_prompt %}"
     "{{ '<|im_start|>assistant\n' }}"
     "{% endif %}"
@@ -53,6 +53,8 @@ def train_bpe_tokenizer(
         Use tokenizers.Tokenizer(models.BPE), NFKC normalization, ByteLevel
         pre-tokenization/decoding, and BpeTrainer.
     """
+
+
 
     raise NotImplementedError("Implement BPE tokenizer training")
 
