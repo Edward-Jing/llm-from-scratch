@@ -1,19 +1,19 @@
-# 函数参数速查
+# API Reference
 
-这份表只列你需要亲手实现的公开函数和方法。更完整的输入输出形状在各文件 docstring 里。
+This file lists the public functions and methods that are intended to be implemented by hand. More detailed tensor shapes and behavior notes live in the docstrings of each source file.
 
-## 配置
+## Configs
 
-| 位置 | 函数/类 | 关键参数 |
+| Location | Function/Class | Key Parameters |
 | --- | --- | --- |
 | `scratch_llm/config.py` | `ModelConfig` | `vocab_size`, `dim`, `n_layers`, `n_heads`, `n_kv_heads`, `hidden_dim`, `max_seq_len`, `dropout` |
 | `scratch_llm/config.py` | `TokenizerConfig` | `vocab_size`, `min_frequency`, `text_key`, `unk_token`, `bos_token`, `eos_token`, `pad_token` |
 | `scratch_llm/config.py` | `TrainConfig` | `data_path`, `tokenizer_dir`, `output_dir`, `device`, `batch_size`, `learning_rate`, `epochs` |
 | `scratch_llm/config.py` | `GenerationConfig` | `max_new_tokens`, `temperature`, `top_k`, `eos_token_id`, `pad_token_id` |
 
-## 数据和 tokenizer
+## Data And Tokenizer
 
-| 位置 | 函数/类 | 传入参数 | 返回 |
+| Location | Function/Class | Parameters | Returns |
 | --- | --- | --- | --- |
 | `data/jsonl.py` | `iter_jsonl_records` | `path`, `encoding="utf-8"` | `Iterator[dict]` |
 | `data/jsonl.py` | `iter_jsonl_texts` | `path`, `text_key="text"`, `encoding="utf-8"` | `Iterator[str]` |
@@ -27,9 +27,9 @@
 | `tokenizer.py` | `load_tokenizer` | `tokenizer_dir` | tokenizer |
 | `tokenizer.py` | `validate_tokenizer` | `tokenizer`, `sample_text`, `messages` | `dict` |
 
-## 模型
+## Model
 
-| 位置 | 函数/类 | 传入参数 | 返回 |
+| Location | Function/Class | Parameters | Returns |
 | --- | --- | --- | --- |
 | `model/norm.py` | `RMSNorm.__init__` | `dim`, `eps=1e-5` | module |
 | `model/norm.py` | `RMSNorm.forward` | `x` | normalized tensor |
@@ -49,9 +49,9 @@
 | `model/transformer.py` | `ScratchLLM.prepare_attention_mask` | `attention_mask`, `input_ids` | mask or `None` |
 | `model/transformer.py` | `ScratchLLM.forward` | `input_ids`, `labels`, `attention_mask` | `dict` |
 
-## 训练和推理
+## Training And Inference
 
-| 位置 | 函数 | 传入参数 | 返回 |
+| Location | Function | Parameters | Returns |
 | --- | --- | --- | --- |
 | `training/lr.py` | `cosine_lr` | `step`, `total_steps`, `base_lr`, `warmup_steps`, `min_lr_ratio` | `float` |
 | `training/loop.py` | `move_batch_to_device` | `batch`, `device` | `batch` |

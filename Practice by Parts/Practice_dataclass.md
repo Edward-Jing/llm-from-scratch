@@ -1,4 +1,4 @@
-Toy exercise: practice @dataclass from scratch
+# Practice: `@dataclass(slots=True)` From Scratch
 
 Goal:
 Write this file from scratch to practice the meaning of @dataclass(slots=True).
