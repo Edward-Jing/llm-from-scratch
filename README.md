@@ -1,6 +1,6 @@
 # Scratch LLM 学习工程
 
-这个目录是给你边读 Happy-LLM 边手搓 LLM 用的骨架。原教程代码保留在 `docs/chapter5/code/`，这里新增的 `scratch_llm/` 不复制完整答案，只给出架构、函数签名、参数、返回值和 TODO。
+这是Edward边读 Happy-LLM 边手搓 LLM 用的学习结构。happyllm原教程代码保留在 `docs/chapter5/code/`，这里新增的 `scratch_llm/` 不复制完整答案，只给出架构、函数签名、参数、返回值和 TODO。
 
 ## 目标
 
@@ -94,4 +94,13 @@ git commit -m "Add scratch LLM learning scaffold"
 git push -u origin scratch-llm-starter
 ```
 
-之后你的节奏可以是：实现一个函数，跑一次测试，提交一次小 commit。
+实现一个函数，跑一次测试，提交一次小 commit。
+
+## 辅助知识练习
+
+有一些很关键的辅助知识也需要学习，全部放在了`/Practice by Parts`文件夹下。
+
+按照学习顺序，我们学习了：
+
+1. dataclass(slot=TRUE）以及 OOP
+
