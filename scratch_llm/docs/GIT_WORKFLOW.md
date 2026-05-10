@@ -1,29 +1,39 @@
-# GitHub 同步工作流
+# GitHub Workflow
 
-这个仓库的远端已经是：
+The project remote should point to Edward's own repository:
 
 ```bash
-origin https://github.com/Edward-Jing/happy-llm.git
+origin https://github.com/Edward-Jing/llm-from-scratch.git
 ```
 
-建议把手搓 LLM 工程放在独立分支：
+The usual branch for learning work is:
 
 ```bash
-git switch scratch-llm-starter
-git status --short --branch
-git add scratch_llm scripts tests pyproject.toml .gitignore
-git commit -m "Add scratch LLM learning scaffold"
-git push -u origin scratch-llm-starter
+scratch-llm-starter
 ```
 
-日常节奏：
+## Daily Workflow
+
+Work locally first, then commit and push:
 
 ```bash
-git pull --rebase
+git status
 python3 -m unittest tests/test_contracts.py
-git add scratch_llm tests
+python3 -m unittest -v tests/test_jsonl.py
+git add .
 git commit -m "Implement RMSNorm"
 git push
 ```
 
-如果你想把学习工程合回 `main`，可以在 GitHub 上从 `scratch-llm-starter` 开 Pull Request。
+## GitHub Desktop Workflow
+
+1. Edit files locally.
+2. Open GitHub Desktop.
+3. Review files in the Changes tab.
+4. Write a short commit summary.
+5. Click `Commit to scratch-llm-starter`.
+6. Click `Push origin`.
+
+## Notes
+
+This repository is a personal learning project inspired by [Happy-LLM](https://github.com/datawhalechina/happy-llm). It should not be pushed back to the original Happy-LLM repository unless you intentionally decide to contribute there later.

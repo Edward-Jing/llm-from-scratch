@@ -1,31 +1,34 @@
-# 实现顺序建议
+# Implementation Order
 
-## 第 1 步: 数据读写
+This order follows the practical learning path of the original [Happy-LLM](https://github.com/datawhalechina/happy-llm) guide, but keeps the work scoped to this personal scratch implementation.
 
-先完成 `iter_jsonl_records`, `iter_jsonl_texts`, `count_jsonl_lines`。这一步只用标准库 `json` 和文件读写，不碰张量。
+## Step 1: Data Reading
 
-验收点：
+Implement `iter_jsonl_records`, `iter_jsonl_texts`, and `count_jsonl_lines` first. This step only needs the standard library: `json`, `pathlib`, and file I/O. No tensor work is required yet.
+
+Check:
 
 ```bash
 python3 -m unittest tests/test_contracts.py
+python3 -m unittest -v tests/test_jsonl.py
 ```
 
-## 第 2 步: Tokenizer
+## Step 2: Tokenizer
 
-完成 `train_bpe_tokenizer`, `write_tokenizer_configs`, `load_tokenizer`, `validate_tokenizer`。参考 `docs/chapter5/code/train_tokenizer.py`，但自己写一遍流程。
+Implement `train_bpe_tokenizer`, `write_tokenizer_configs`, `load_tokenizer`, and `validate_tokenizer`. Use the Happy-LLM tokenizer workflow as conceptual guidance, then write the implementation yourself.
 
-最小数据格式：
+Minimal data format:
 
 ```jsonl
 {"text": "hello world"}
 {"text": "language model learns next tokens"}
 ```
 
-## 第 3 步: Dataset
+## Step 3: Dataset
 
-完成 `build_causal_lm_example` 后再写 `CausalLMDataset`。
+Implement `build_causal_lm_example` first, then implement `CausalLMDataset`.
 
-关键形状：
+Important shapes:
 
 ```text
 unshifted input_ids: max_length
@@ -34,9 +37,9 @@ y: max_length - 1
 loss_mask: max_length - 1
 ```
 
-## 第 4 步: 模型小模块
+## Step 4: Small Model Modules
 
-建议顺序：
+Recommended order:
 
 1. `RMSNorm`
 2. `precompute_rope_frequencies`
@@ -46,31 +49,31 @@ loss_mask: max_length - 1
 6. `SwiGLU`
 7. `repeat_kv`
 
-这些都可以单独造随机张量测试，不需要训练。
+Each function can be tested with small random tensors before any training loop exists.
 
-## 第 5 步: Attention 和 Block
+## Step 5: Attention And Decoder Block
 
-先实现不带 padding mask 的 causal attention，再补 `attention_mask`。
+First implement causal attention without a padding mask. Then add `attention_mask` support.
 
-注意形状变换：
+Shape guide:
 
 ```text
 x:  (batch, seq_len, dim)
 q:  (batch, seq_len, n_heads, head_dim)
 k/v:(batch, seq_len, n_kv_heads, head_dim)
-attn input after transpose: (batch, heads, seq_len, head_dim)
+attention input after transpose: (batch, heads, seq_len, head_dim)
 output: (batch, seq_len, dim)
 ```
 
-## 第 6 步: ScratchLLM
+## Step 6: ScratchLLM
 
-把 embedding、decoder blocks、final RMSNorm、LM head 串起来。训练时返回全量 logits 和 loss；生成时先不用 KV cache，保持简单。
+Connect token embeddings, decoder blocks, final RMSNorm, and the LM head. During training, return full logits and loss. For generation, start with a simple no-KV-cache implementation.
 
-## 第 7 步: 训练 loop
+## Step 7: Training Loop
 
-先让 CPU 上的小模型跑通，再考虑 GPU、混合精度、多卡。
+Make a tiny CPU model work first. GPU, mixed precision, and multi-GPU training can come later.
 
-建议最小配置：
+Minimal run:
 
 ```bash
 python3 scripts/02_pretrain.py \
@@ -83,6 +86,6 @@ python3 scripts/02_pretrain.py \
   --max-seq-len 64
 ```
 
-## 第 8 步: 生成
+## Step 8: Generation
 
-先实现 `temperature=0` 的 greedy decode，再实现 `top_k` 和随机采样。
+Start with greedy decoding using `temperature=0`. After that works, add `top_k` and random sampling.

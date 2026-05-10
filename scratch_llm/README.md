@@ -1,51 +1,52 @@
-# Scratch LLM 学习工程
+# Scratch LLM Package
 
-这个目录是给你边读 Happy-LLM 边手搓 LLM 用的骨架。原教程代码保留在 `docs/chapter5/code/`，这里新增的 `scratch_llm/` 不复制完整答案，只给出架构、函数签名、参数、返回值和 TODO。
+This package contains the learning scaffold for implementing a small decoder-only LLM from scratch. It defines the module layout, function signatures, input/output contracts, and TODO markers that guide the implementation process.
 
-## 目标
+## Reference
 
-1. 从 JSONL 文本训练一个 ByteLevel BPE tokenizer。
-2. 构造 causal language modeling 数据集。
-3. 手写一个 LLaMA 风格 decoder-only Transformer。
-4. 完成预训练 loop、checkpoint、生成函数。
-5. 用 Git 分支把本地进度同步到 GitHub。
+The learning path follows the original Happy-LLM project:
 
-## 目录
+- Original repository: [datawhalechina/happy-llm](https://github.com/datawhalechina/happy-llm)
+- Online guide: [Happy-LLM documentation](https://datawhalechina.github.io/happy-llm/)
+
+This package is a personal learning scaffold. It is not a copy of the original tutorial implementation.
+
+## Goals
+
+1. Train a ByteLevel BPE tokenizer from JSONL text.
+2. Build a causal language modeling dataset.
+3. Implement a LLaMA-style decoder-only Transformer by hand.
+4. Implement pretraining, checkpointing, and generation.
+5. Keep progress easy to test, commit, and review.
+
+## Layout
 
 ```text
 scratch_llm/
-  config.py              # ModelConfig / TokenizerConfig / TrainConfig / GenerationConfig
-  tokenizer.py           # BPE tokenizer 训练、保存、加载、校验
+  config.py              # Project-wide dataclass configs
+  tokenizer.py           # BPE tokenizer workflow
   data/
-    jsonl.py             # JSONL 读取
-    dataset.py           # Pretrain/SFT 数据集和 loss mask
+    jsonl.py             # JSONL readers
+    dataset.py           # Dataset construction
   model/
     norm.py              # RMSNorm
-    rope.py              # RoPE
-    attention.py         # causal self-attention / GQA
-    mlp.py               # SwiGLU
-    blocks.py            # DecoderBlock
-    transformer.py       # ScratchLLM
+    rope.py              # Rotary position embeddings
+    attention.py         # Causal self-attention / grouped-query attention
+    mlp.py               # SwiGLU feed-forward layer
+    blocks.py            # Decoder block
+    transformer.py       # Full language model
   training/
-    lr.py                # warmup + cosine decay
-    loop.py              # train/evaluate
-    checkpoint.py        # save/load
+    lr.py                # Learning-rate schedule
+    loop.py              # Training and evaluation loops
+    checkpoint.py        # Checkpoint helpers
   inference/
-    generation.py        # top-k sampling / generate
+    generation.py        # Sampling and generation
   utils/
-    seed.py              # 随机种子
-    params.py            # 参数量统计
-scripts/
-  01_train_tokenizer.py
-  02_pretrain.py
-  03_generate.py
-tests/
-  test_contracts.py
+    seed.py              # Reproducibility helpers
+    params.py            # Parameter counting
 ```
 
-## 推荐实现顺序
-
-先写纯 Python 小函数，再写张量函数，最后写训练。
+## Implementation Order
 
 1. `scratch_llm/data/jsonl.py`
 2. `scratch_llm/tokenizer.py`
@@ -61,37 +62,18 @@ tests/
 12. `scratch_llm/training/checkpoint.py`
 13. `scratch_llm/inference/generation.py`
 
-## 本地运行
-
-接口契约测试不依赖 pytest：
+## Local Checks
 
 ```bash
 python3 -m unittest tests/test_contracts.py
-```
-
-语法检查：
-
-```bash
+python3 -m unittest -v tests/test_jsonl.py
 python3 -m compileall scratch_llm scripts tests
 ```
 
-当你开始填实现后，可以逐步跑：
+## Script Entry Points
 
 ```bash
 python3 scripts/01_train_tokenizer.py --data-path data/pretrain.jsonl
 python3 scripts/02_pretrain.py --data-path data/pretrain.jsonl --device cpu
-python3 scripts/03_generate.py --checkpoint scratch_llm_runs/checkpoints/model.pt --prompt "你好"
+python3 scripts/03_generate.py --checkpoint scratch_llm_runs/checkpoints/model.pt --prompt "Hello"
 ```
-
-## GitHub 同步
-
-当前骨架建议放在独立分支：
-
-```bash
-git status --short --branch
-git add scratch_llm scripts tests pyproject.toml .gitignore
-git commit -m "Add scratch LLM learning scaffold"
-git push -u origin scratch-llm-starter
-```
-
-之后你的节奏可以是：实现一个函数，跑一次测试，提交一次小 commit。
