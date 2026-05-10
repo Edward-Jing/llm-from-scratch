@@ -1,0 +1,3 @@
+{"text": "hello world", "source": "case-1"}
+{"text": "second line", "source": "case-2"}
+{"text": "中文也应该正常读取", "source": "case-3"}
