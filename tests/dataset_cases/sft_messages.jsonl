@@ -1,0 +1,2 @@
+{"messages": [{"role": "system", "content": "You are helpful."}, {"role": "user", "content": "Say hello."}, {"role": "assistant", "content": "Hello!"}]}
+[{"role": "user", "content": "What are tokens?"}, {"role": "assistant", "content": "Tokens are pieces of text."}]

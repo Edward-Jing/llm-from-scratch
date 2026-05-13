@@ -61,7 +61,7 @@ Practice by Parts/
 Start with pure Python helpers, then move to tensor operations, then training.
 
 1. `scratch_llm/data/jsonl.py` 5.10
-2. `scratch_llm/tokenizer.py` 
+2. `scratch_llm/tokenizer.py` 5.12
 3. `scratch_llm/data/dataset.py`
 4. `scratch_llm/model/norm.py`
 5. `scratch_llm/model/rope.py`
