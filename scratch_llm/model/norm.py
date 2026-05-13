@@ -24,9 +24,10 @@ class RMSNorm(nn.Module):
         super().__init__()
         self.dim = dim
         self.eps = eps
-        raise NotImplementedError("Create the learnable scale parameter")
+        self.weight = nn.Parameter(torch.ones(dim))
+
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """Normalize x across the last dimension."""
-
-        raise NotImplementedError("Implement RMS normalization")
+        normalized_x = x.float()/ torch.sqrt(x.float().pow(2).mean(dim = -1, keepdim=True) + self.eps)
+        return (normalized_x * self.weight).type_as(x)
