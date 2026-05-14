@@ -63,10 +63,10 @@ Start with pure Python helpers, then move to tensor operations, then training.
 1. `scratch_llm/data/jsonl.py` 5.10
 2. `scratch_llm/tokenizer.py` 5.12
 3. `scratch_llm/data/dataset.py` 5.13
-4. `scratch_llm/model/norm.py`
-5. `scratch_llm/model/rope.py`
-6. `scratch_llm/model/mlp.py`
-7. `scratch_llm/model/attention.py`
+4. `scratch_llm/model/norm.py` 5.13
+5. `scratch_llm/model/rope.py` 5.14
+6. `scratch_llm/model/mlp.py` 5.14
+7. `scratch_llm/model/attention.py` 
 8. `scratch_llm/model/blocks.py`
 9. `scratch_llm/model/transformer.py`
 10. `scratch_llm/training/lr.py`
