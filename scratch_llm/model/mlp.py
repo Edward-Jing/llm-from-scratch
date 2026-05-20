@@ -22,7 +22,7 @@ def derive_swiglu_hidden_dim(
         Final hidden size.
     """
     if hidden_dim is not None:
-            return hidden_dim
+        return hidden_dim
 
     hidden = int(2 * (4 * dim) / 3)
     hidden = multiple_of * ((hidden + multiple_of - 1) // multiple_of)
