@@ -20,7 +20,13 @@ def unwrap_model(model: nn.Module) -> nn.Module:
         The module whose state_dict should be saved.
     """
 
-    raise NotImplementedError("Implement wrapper unwrapping")
+    while hasattr(model, "module"):
+        model = model.module
+
+    if hasattr(model, "_orig_mod"):
+        model = model._orig_mod
+
+    return model
 
 
 def save_checkpoint(
@@ -40,7 +46,19 @@ def save_checkpoint(
         extra: Optional metadata, such as config dicts.
     """
 
-    raise NotImplementedError("Implement torch.save checkpoint payload")
+    checkpoint_path = Path(path)
+    checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
+
+    payload: dict[str, Any] = {
+        "model_state_dict": unwrap_model(model).state_dict(),
+        "step": step,
+        "extra": {} if extra is None else extra,
+    }
+
+    if optimizer is not None:
+        payload["optimizer_state_dict"] = optimizer.state_dict()
+
+    torch.save(payload, checkpoint_path)
 
 
 def load_checkpoint(
@@ -63,4 +81,38 @@ def load_checkpoint(
         Remaining checkpoint metadata, such as step and extra.
     """
 
-    raise NotImplementedError("Implement torch.load plus state restoration")
+    checkpoint_path = Path(path)
+    try:
+        checkpoint = torch.load(
+            checkpoint_path,
+            map_location=map_location,
+            weights_only=False,
+        )
+    except TypeError:
+        checkpoint = torch.load(checkpoint_path, map_location=map_location)
+
+    if "model_state_dict" in checkpoint:
+        model_state = checkpoint["model_state_dict"]
+    elif "model" in checkpoint:
+        model_state = checkpoint["model"]
+    elif "state_dict" in checkpoint:
+        model_state = checkpoint["state_dict"]
+    else:
+        raise KeyError("Checkpoint does not contain a model state dict")
+
+    load_result = unwrap_model(model).load_state_dict(model_state, strict=strict)
+
+    if optimizer is not None and "optimizer_state_dict" in checkpoint:
+        optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
+
+    metadata = {
+        key: value
+        for key, value in checkpoint.items()
+        if key not in {"model_state_dict", "model", "state_dict", "optimizer_state_dict"}
+    }
+
+    if not strict:
+        metadata["missing_keys"] = list(load_result.missing_keys)
+        metadata["unexpected_keys"] = list(load_result.unexpected_keys)
+
+    return metadata
