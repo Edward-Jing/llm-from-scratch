@@ -118,6 +118,10 @@ def apply_rotary_embedding(
     k_sin = reshape_for_broadcast(freqs_sin, k_even)
 
     # Apply 2D rotation to query and key pairs.
+    """
+    [ cos  -sin ] [x]
+    [ sin   cos ] [y]
+    """
     q_rotated_even = q_even * q_cos - q_odd * q_sin
     q_rotated_odd = q_even * q_sin + q_odd * q_cos
     k_rotated_even = k_even * k_cos - k_odd * k_sin
