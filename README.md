@@ -66,8 +66,8 @@ Start with pure Python helpers, then move to tensor operations, then training.
 4. `scratch_llm/model/norm.py` 5.13
 5. `scratch_llm/model/rope.py` 5.14
 6. `scratch_llm/model/mlp.py` 5.14
-7. `scratch_llm/model/attention.py` 
-8. `scratch_llm/model/blocks.py`
+7. `scratch_llm/model/attention.py` 5.20
+8. `scratch_llm/model/blocks.py`5.20
 9. `scratch_llm/model/transformer.py`
 10. `scratch_llm/training/lr.py`
 11. `scratch_llm/training/loop.py`

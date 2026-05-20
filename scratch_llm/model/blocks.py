@@ -8,7 +8,9 @@ import torch
 from torch import nn
 
 from scratch_llm.config import ModelConfig
-
+from scratch_llm.model.attention import CausalSelfAttention
+from scratch_llm.model.mlp import SwiGLU
+from scratch_llm.model.norm import RMSNorm
 
 class DecoderBlock(nn.Module):
     """One pre-norm Transformer decoder layer.
@@ -32,15 +34,44 @@ class DecoderBlock(nn.Module):
         config.validate()
         self.layer_id = layer_id
         self.config = config
-        raise NotImplementedError("Create attention, MLP, attention_norm, and ffn_norm")
+
+        self.attention = CausalSelfAttention(config)
+
+        self.feed_forward = SwiGLU(
+            dim=config.dim,
+            hidden_dim=config.hidden_dim,
+            multiple_of=config.multiple_of,
+            dropout=config.dropout,
+        )
+
+        self.attention_norm = RMSNorm(
+            dim=config.dim,
+            eps=config.norm_eps,
+        )
+
+        self.ffn_norm = RMSNorm(
+            dim=config.dim,
+            eps=config.norm_eps,
+        )
 
     def forward(
-        self,
-        x: torch.Tensor,
-        freqs_cos: torch.Tensor,
-        freqs_sin: torch.Tensor,
-        attention_mask: Optional[torch.Tensor] = None,
+            self,
+            x: torch.Tensor,
+            freqs_cos: torch.Tensor,
+            freqs_sin: torch.Tensor,
+            attention_mask: Optional[torch.Tensor] = None,
     ) -> torch.Tensor:
         """Apply attention residual, then MLP residual."""
 
-        raise NotImplementedError("Implement the two residual branches")
+        h = x + self.attention(
+            self.attention_norm(x),
+            freqs_cos=freqs_cos,
+            freqs_sin=freqs_sin,
+            attention_mask=attention_mask,
+        )
+
+        out = h + self.feed_forward(
+            self.ffn_norm(h)
+        )
+
+        return out
