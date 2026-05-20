@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import torch
 from torch import nn
-
+import torch.nn.functional as F
 
 def derive_swiglu_hidden_dim(
     dim: int,
@@ -21,9 +21,13 @@ def derive_swiglu_hidden_dim(
     Returns:
         Final hidden size.
     """
+    if hidden_dim is not None:
+            return hidden_dim
 
-    raise NotImplementedError("Implement the 4x -> 2/3 -> rounded SwiGLU rule")
+    hidden = int(2 * (4 * dim) / 3)
+    hidden = multiple_of * ((hidden + multiple_of - 1) // multiple_of)
 
+    return hidden
 
 class SwiGLU(nn.Module):
     """LLaMA-style gated MLP.
@@ -42,20 +46,33 @@ class SwiGLU(nn.Module):
     """
 
     def __init__(
-        self,
-        dim: int,
-        hidden_dim: int | None,
-        multiple_of: int,
-        dropout: float,
+            self,
+            dim: int,
+            hidden_dim: int | None,
+            multiple_of: int,
+            dropout: float,
     ) -> None:
         super().__init__()
         self.dim = dim
-        self.hidden_dim = hidden_dim
+        self.hidden_dim = derive_swiglu_hidden_dim(
+            dim=dim,
+            hidden_dim=hidden_dim,
+            multiple_of=multiple_of,
+        )
         self.multiple_of = multiple_of
         self.dropout_p = dropout
-        raise NotImplementedError("Create gate/up/down projections and dropout")
+
+        self.w1 = nn.Linear(dim, self.hidden_dim, bias=False)
+        self.w2 = nn.Linear(self.hidden_dim, dim, bias=False)
+        self.w3 = nn.Linear(dim, self.hidden_dim, bias=False)
+        self.dropout = nn.Dropout(dropout)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """Apply gated feed-forward transformation."""
 
-        raise NotImplementedError("Implement silu(w1(x)) * w3(x), then w2")
+        gate = F.silu(self.w1(x))
+        up = self.w3(x)
+        out = self.w2(gate * up)
+        out = self.dropout(out)
+
+        return out
