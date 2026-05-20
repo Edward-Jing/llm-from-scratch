@@ -60,7 +60,7 @@ Practice by Parts/
 
 Start with pure Python helpers, then move to tensor operations, then training.
 
-1. `scratch_llm/data/jsonl.py` 5.10
+1. `scratch_llm/data/jsonl.py` 5.10 
 2. `scratch_llm/tokenizer.py` 5.12
 3. `scratch_llm/data/dataset.py` 5.13
 4. `scratch_llm/model/norm.py` 5.13
@@ -68,11 +68,11 @@ Start with pure Python helpers, then move to tensor operations, then training.
 6. `scratch_llm/model/mlp.py` 5.14
 7. `scratch_llm/model/attention.py` 5.20
 8. `scratch_llm/model/blocks.py`5.20
-9. `scratch_llm/model/transformer.py`
-10. `scratch_llm/training/lr.py`
-11. `scratch_llm/training/loop.py`
-12. `scratch_llm/training/checkpoint.py`
-13. `scratch_llm/inference/generation.py`
+9. `scratch_llm/model/transformer.py` 5.20
+10. `scratch_llm/training/lr.py` 5.20
+11. `scratch_llm/training/loop.py` 5.20
+12. `scratch_llm/training/checkpoint.py` 5.20
+13. `scratch_llm/inference/generation.py` 5.20
 
 ## Local Checks
 
