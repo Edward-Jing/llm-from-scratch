@@ -22,8 +22,9 @@ if [ ! -d "$HOME/.venvs/llm-from-scratch" ]; then
     python3 -m venv --system-site-packages "$HOME/.venvs/llm-from-scratch"
 fi
 
-source "$HOME/.venvs/llm-from-scratch/bin/activate"
-python -m pip install -e ".[dev]"
+VENV_PYTHON="$HOME/.venvs/llm-from-scratch/bin/python"
+"$VENV_PYTHON" -m pip install "tokenizers>=0.19" "transformers>=4.44" "pytest>=8.0"
+"$VENV_PYTHON" -m pip install --no-deps -e .
 
 DATA_PATH="${DATA_PATH:-data/pretrain.jsonl}"
 TOKENIZER_DIR="${TOKENIZER_DIR:-scratch_llm_runs/tokenizer}"
@@ -39,17 +40,17 @@ LEARNING_RATE="${LEARNING_RATE:-3e-4}"
 
 mkdir -p "$OUTPUT_DIR"
 
-python3 scripts/check_cuda_env.py
-python3 -m unittest discover -v tests
+"$VENV_PYTHON" scripts/check_cuda_env.py
+"$VENV_PYTHON" -m unittest discover -v tests
 
 if [ ! -f "$TOKENIZER_DIR/tokenizer.json" ]; then
-    python3 scripts/01_train_tokenizer.py \
+    "$VENV_PYTHON" scripts/01_train_tokenizer.py \
         --data-path "$DATA_PATH" \
         --output-dir "$TOKENIZER_DIR" \
         --vocab-size "$VOCAB_SIZE"
 fi
 
-python3 scripts/02_pretrain.py \
+"$VENV_PYTHON" scripts/02_pretrain.py \
     --data-path "$DATA_PATH" \
     --tokenizer-dir "$TOKENIZER_DIR" \
     --output-dir "$OUTPUT_DIR" \
