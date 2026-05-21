@@ -109,7 +109,12 @@ def main() -> None:
 
         messages.append({"role": "user", "content": user_text})
         prompt = format_prompt(tokenizer, messages, args.plain_prompt)
-        input_ids = tokenizer(prompt, return_tensors="pt").input_ids.to(args.device)
+        encoded = tokenizer(prompt, add_special_tokens=False)
+        input_ids = torch.tensor(
+            [encoded["input_ids"]],
+            dtype=torch.long,
+            device=args.device,
+        )
         input_ids = input_ids[:, -model_config.max_seq_len :]
 
         new_ids = generate(model, input_ids, gen_config)

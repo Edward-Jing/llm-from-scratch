@@ -6,13 +6,17 @@ requires-python = ">=3.10"
 dependencies = [
     "torch>=2.4",
     "tokenizers>=0.19",
-    "transformers>=4.44",
+    "transformers>=4.44,<5",
 ]
 
 [project.optional-dependencies]
 dev = [
     "pytest>=8.0",
 ]
+
+[tool.setuptools.packages.find]
+include = ["scratch_llm*"]
+exclude = ["data*", "scratch_llm_runs*", "tests*", "scripts*"]
 
 [tool.ruff]
 line-length = 100

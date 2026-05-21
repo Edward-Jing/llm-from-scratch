@@ -67,7 +67,12 @@ def main() -> None:
     load_checkpoint(args.checkpoint, model, map_location=args.device)
     model.eval()
 
-    input_ids = tokenizer(args.prompt, return_tensors="pt").input_ids.to(args.device)
+    encoded = tokenizer(args.prompt, add_special_tokens=False)
+    input_ids = torch.tensor(
+        [encoded["input_ids"]],
+        dtype=torch.long,
+        device=args.device,
+    )
     gen_config = GenerationConfig(
         max_new_tokens=args.max_new_tokens,
         temperature=args.temperature,
