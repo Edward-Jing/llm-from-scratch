@@ -74,6 +74,25 @@ def build_sft_loss_mask(
     return mask
 
 
+def _include_assistant_eos_in_mask(
+    input_ids: list[int],
+    loss_mask: list[int],
+    assistant_prefix_ids: list[int],
+    eos_token_id: int,
+) -> list[int]:
+    """Mark the assistant EOS token so generation learns when to stop."""
+
+    prefix_length = len(assistant_prefix_ids)
+    for i in range(0, len(input_ids)):
+        if input_ids[i:i + prefix_length] == assistant_prefix_ids:
+            j = i + prefix_length
+            while j < len(input_ids) and input_ids[j] != eos_token_id:
+                j += 1
+            if j < len(input_ids):
+                loss_mask[j] = 1
+    return loss_mask
+
+
 
 
 class CausalLMDataset(Dataset):
@@ -289,6 +308,12 @@ class SFTDataset(Dataset):
 
         loss_mask = build_sft_loss_mask(
             input_ids=input_ids,
+            assistant_prefix_ids=self.assistant_prefix_ids,
+            eos_token_id=self.eos_token_id,
+        )
+        loss_mask = _include_assistant_eos_in_mask(
+            input_ids=input_ids,
+            loss_mask=loss_mask,
             assistant_prefix_ids=self.assistant_prefix_ids,
             eos_token_id=self.eos_token_id,
         )
