@@ -50,6 +50,7 @@ scripts/
   03_generate.py
   04_chat.py
   check_cuda_env.py
+  msbc_setup_env.sh
   msbc_train_h100.sbatch
 tests/
   test_contracts.py
@@ -113,8 +114,7 @@ On the server, request a GPU through SLURM before checking CUDA:
 
 ```bash
 srun --gpus=1g.10gb:1 --time=1:00:00 --mem-per-gpu=16GB --cpus-per-gpu=4 --pty /bin/bash -i
-conda activate pytorch
-python3 scripts/check_cuda_env.py
+bash scripts/msbc_setup_env.sh
 ```
 
 For a full 80GB H100 MIG slice, the included batch template uses:

@@ -12,9 +12,18 @@
 set -euo pipefail
 
 cd "${SLURM_SUBMIT_DIR:-$PWD}"
-conda activate pytorch
 export PYTHONUNBUFFERED=1
 export TOKENIZERS_PARALLELISM=false
+
+eval "$(conda shell.bash hook)"
+conda activate pytorch
+
+if [ ! -d "$HOME/.venvs/llm-from-scratch" ]; then
+    python3 -m venv --system-site-packages "$HOME/.venvs/llm-from-scratch"
+fi
+
+source "$HOME/.venvs/llm-from-scratch/bin/activate"
+python -m pip install -e ".[dev]"
 
 DATA_PATH="${DATA_PATH:-data/pretrain.jsonl}"
 TOKENIZER_DIR="${TOKENIZER_DIR:-scratch_llm_runs/tokenizer}"
