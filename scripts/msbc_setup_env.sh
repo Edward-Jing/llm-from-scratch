@@ -7,7 +7,7 @@
 set -euo pipefail
 
 PROJECT_DIR="${PROJECT_DIR:-$PWD}"
-VENV_DIR="${VENV_DIR:-$HOME/.venvs/llm-from-scratch}"
+VENV_DIR="${VENV_DIR:-$HOME/.venvs/llm-from-scratch-py311}"
 
 cd "$PROJECT_DIR"
 
@@ -19,11 +19,16 @@ else
     exit 1
 fi
 
-if [ ! -d "$VENV_DIR" ]; then
+VENV_PYTHON="$VENV_DIR/bin/python"
+
+if [ ! -x "$VENV_PYTHON" ]; then
     python3 -m venv --system-site-packages "$VENV_DIR"
 fi
 
-VENV_PYTHON="$VENV_DIR/bin/python"
+if [ ! -x "$VENV_PYTHON" ]; then
+    echo "Failed to create venv Python at $VENV_PYTHON" >&2
+    exit 1
+fi
 
 "$VENV_PYTHON" -m pip install --upgrade pip
 "$VENV_PYTHON" -m pip install "tokenizers>=0.19" "transformers>=4.44" "pytest>=8.0"
