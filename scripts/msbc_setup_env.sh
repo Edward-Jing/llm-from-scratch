@@ -23,10 +23,11 @@ if [ ! -d "$VENV_DIR" ]; then
     python3 -m venv --system-site-packages "$VENV_DIR"
 fi
 
-source "$VENV_DIR/bin/activate"
+VENV_PYTHON="$VENV_DIR/bin/python"
 
-python -m pip install --upgrade pip
-python -m pip install -e ".[dev]"
+"$VENV_PYTHON" -m pip install --upgrade pip
+"$VENV_PYTHON" -m pip install "tokenizers>=0.19" "transformers>=4.44" "pytest>=8.0"
+"$VENV_PYTHON" -m pip install --no-deps -e .
 
-python scripts/check_cuda_env.py
-python -m unittest discover -v tests
+"$VENV_PYTHON" scripts/check_cuda_env.py
+"$VENV_PYTHON" -m unittest discover -v tests
