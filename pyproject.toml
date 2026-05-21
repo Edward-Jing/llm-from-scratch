@@ -14,6 +14,10 @@ dev = [
     "pytest>=8.0",
 ]
 
+[tool.setuptools.packages.find]
+include = ["scratch_llm*"]
+exclude = ["data*", "scratch_llm_runs*", "tests*", "scripts*"]
+
 [tool.ruff]
 line-length = 100
 target-version = "py310"
