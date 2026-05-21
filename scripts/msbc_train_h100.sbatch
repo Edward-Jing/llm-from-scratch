@@ -30,7 +30,7 @@ if [ ! -x "$VENV_PYTHON" ]; then
     exit 1
 fi
 
-"$VENV_PYTHON" -m pip install "tokenizers>=0.19" "transformers>=4.44" "pytest>=8.0"
+"$VENV_PYTHON" -m pip install "tokenizers>=0.19" "transformers>=4.44,<5" "pytest>=8.0"
 "$VENV_PYTHON" -m pip install --no-deps -e .
 
 DATA_PATH="${DATA_PATH:-data/pretrain.jsonl}"
