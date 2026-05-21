@@ -48,6 +48,10 @@ scripts/
   01_train_tokenizer.py
   02_pretrain.py
   03_generate.py
+  04_chat.py
+  check_cuda_env.py
+  msbc_setup_env.sh
+  msbc_train_h100.sbatch
 tests/
   test_contracts.py
   test_jsonl.py
@@ -99,8 +103,29 @@ After implementations are filled in, the project should support:
 ```bash
 python3 scripts/01_train_tokenizer.py --data-path data/pretrain.jsonl
 python3 scripts/02_pretrain.py --data-path data/pretrain.jsonl --device cpu
-python3 scripts/03_generate.py --checkpoint scratch_llm_runs/checkpoints/model.pt --prompt "Hello"
+python3 scripts/03_generate.py --checkpoint scratch_llm_runs/checkpoints/final.pt --prompt "Hello"
 ```
+
+## MSBC Server Training
+
+Use GitHub as the sync point between the local Mac and MSBC.
+
+On the server, request a GPU through SLURM before checking CUDA:
+
+```bash
+srun --gpus=1g.10gb:1 --time=1:00:00 --mem-per-gpu=16GB --cpus-per-gpu=4 --pty /bin/bash -i
+bash scripts/msbc_setup_env.sh
+```
+
+For a full 80GB H100 MIG slice, the included batch template uses:
+
+```bash
+sbatch scripts/msbc_train_h100.sbatch
+```
+
+Training checkpoints are written to `scratch_llm_runs/checkpoints/`. Use
+`scripts/03_generate.py` for one-shot generation and `scripts/04_chat.py` for an
+interactive prompt loop.
 
 ## GitHub Workflow
 

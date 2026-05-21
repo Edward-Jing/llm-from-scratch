@@ -16,4 +16,8 @@ def count_parameters(model: nn.Module, trainable_only: bool = True) -> int:
         Number of parameters.
     """
 
-    raise NotImplementedError("Implement parameter counting")
+    return sum(
+        parameter.numel()
+        for parameter in model.parameters()
+        if parameter.requires_grad or not trainable_only
+    )
