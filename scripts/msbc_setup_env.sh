@@ -31,7 +31,7 @@ if [ ! -x "$VENV_PYTHON" ]; then
 fi
 
 "$VENV_PYTHON" -m pip install --upgrade pip
-"$VENV_PYTHON" -m pip install "tokenizers>=0.19" "transformers>=4.44" "pytest>=8.0"
+"$VENV_PYTHON" -m pip install "tokenizers>=0.19" "transformers>=4.44,<5" "pytest>=8.0"
 "$VENV_PYTHON" -m pip install --no-deps -e .
 
 "$VENV_PYTHON" scripts/check_cuda_env.py
